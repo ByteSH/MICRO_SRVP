@@ -1,12 +1,12 @@
 package com.connect.order_service.service;
 
+import com.connect.order_service.config.ClientConfig;
 import com.connect.order_service.dto.OrderRequest;
 import com.connect.order_service.dto.OrderResponse;
 import com.connect.order_service.entity.Order;
 import com.connect.order_service.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,8 +18,7 @@ public class OrderService
 {
 
     private final OrderRepository orderRepository;
-    private final RestTemplate restTemplate;
-
+    private final ClientConfig clientConfig;
 
     public String placeOrder(OrderRequest orderRequest) {
 
@@ -30,10 +29,8 @@ public class OrderService
                 .quantity(orderRequest.getQuantity())
                 .build();
 
-        String url = "http://localhost:8083/api/inventory?skuCode="+orderRequest.getSkuCode()
-                +"&quantity="+orderRequest.getQuantity();
 
-        if (restTemplate.getForObject(url,boolean.class)){
+        if(clientConfig.checkInventory(orderRequest.getSkuCode(), orderRequest.getQuantity())){
             orderRepository.save(order);
             return "Order Placed";
         }
