@@ -20,8 +20,8 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void placeOrder(@RequestBody OrderRequest orderRequest){
-        orderService.placeOrder(orderRequest);
+    public String placeOrder(@RequestBody OrderRequest orderRequest){
+        return orderService.placeOrder(orderRequest);
     }
 
     @GetMapping
